@@ -26,22 +26,6 @@ public class BootstrapData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Author eric = new Author("Eric","Evans");
-        Book ddd = new Book("Domain Driven Design","123123");
-        eric.getBooks().add(ddd);
-        ddd.getAuthors().add(eric);
-
-        authorRepository.save(eric);
-        bookRepository.save(ddd);
-
-        Author rod = new Author("Rod", "Johnson");
-        Book noEJB = new Book("J2EE Development without EJB", "393939393");
-        rod.getBooks().add(noEJB);
-        noEJB.getAuthors().add(rod);
-
-        authorRepository.save(rod);
-        bookRepository.save(noEJB);
-
         Publisher apress = new Publisher("Apress","123 main st","New York","NY","11345");
         publisherRepository.save(apress);
 
@@ -52,9 +36,30 @@ public class BootstrapData implements CommandLineRunner {
 
         publisherRepository.save(sfg);
 
+        Author eric = new Author("Eric","Evans");
+        Book ddd = new Book("Domain Driven Design","123123");
+        add(apress, eric, ddd);
+
+        Author rod = new Author("Rod", "Johnson");
+        Book noEJB = new Book("J2EE Development without EJB", "393939393");
+        add(sfg, rod, noEJB);
+
+
         System.out.println("Started in Bootstrap");
         System.out.println("Number of Books: " + bookRepository.count());
         System.out.println("Number of Authors: " + authorRepository.count());
         System.out.println("Number of Publishers: " + publisherRepository.count());
+        System.out.println("Books by Apress: " + apress.getBooks().size());
+    }
+
+    private void add(Publisher publisher, Author author, Book book) {
+        author.getBooks().add(book);
+        book.getAuthors().add(author);
+        book.setPublisher(publisher);
+        publisher.getBooks().add(book);
+
+        authorRepository.save(author);
+        bookRepository.save(book);
+        publisherRepository.save(publisher);
     }
 }
